@@ -106,9 +106,11 @@ export function AppSidebar({ searchPlaceholder = "Search...", statusText = "Syst
                   <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px]">+12.4%</Badge>
                 </div>
                 <div className="text-2xl font-display font-bold">$0.85</div>
-                <Button size="sm" className="w-full mt-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
-                  Buy VAI
-                </Button>
+                <a href="https://crowdsale.vortia.ai/tokenlite/public/register" target="_blank" rel="noopener noreferrer" className="block">
+                  <Button size="sm" className="w-full mt-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
+                    Buy VAI
+                  </Button>
+                </a>
               </CardContent>
             </Card>
           </div>
