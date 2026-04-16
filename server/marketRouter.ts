@@ -46,26 +46,51 @@ const COIN_IDS: Record<string, string> = {
 // In-memory cache for market data
 let marketDataCache: any = null;
 let marketDataCacheTime = 0;
-const CACHE_DURATION = 60000; // 1 minute cache
+const CACHE_DURATION = 300000; // 5 minute cache (reduces API calls to stay within rate limits)
 
 let globalStatsCache: any = null;
 let globalStatsCacheTime = 0;
 
-// Fallback data when API is rate limited
-const FALLBACK_DATA = [
-  { id: "bitcoin", symbol: "BTC", name: "Bitcoin", current_price: 97500, price_change_percentage_24h: 2.4, market_cap: 1920000000000, total_volume: 45000000000, image: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 95000 + Math.sin(i / 10) * 2000 + Math.random() * 500) } },
-  { id: "ethereum", symbol: "ETH", name: "Ethereum", current_price: 3250, price_change_percentage_24h: 1.8, market_cap: 390000000000, total_volume: 18000000000, image: "https://assets.coingecko.com/coins/images/279/small/ethereum.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 3100 + Math.sin(i / 10) * 150 + Math.random() * 50) } },
-  { id: "solana", symbol: "SOL", name: "Solana", current_price: 245, price_change_percentage_24h: 5.2, market_cap: 115000000000, total_volume: 4500000000, image: "https://assets.coingecko.com/coins/images/4128/small/solana.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 230 + Math.sin(i / 10) * 15 + Math.random() * 5) } },
-  { id: "cardano", symbol: "ADA", name: "Cardano", current_price: 1.05, price_change_percentage_24h: -0.8, market_cap: 37000000000, total_volume: 850000000, image: "https://assets.coingecko.com/coins/images/975/small/cardano.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 1.0 + Math.sin(i / 10) * 0.05 + Math.random() * 0.02) } },
-  { id: "polkadot", symbol: "DOT", name: "Polkadot", current_price: 7.85, price_change_percentage_24h: 3.1, market_cap: 11500000000, total_volume: 420000000, image: "https://assets.coingecko.com/coins/images/12171/small/polkadot.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 7.5 + Math.sin(i / 10) * 0.4 + Math.random() * 0.1) } },
-  { id: "avalanche-2", symbol: "AVAX", name: "Avalanche", current_price: 42.50, price_change_percentage_24h: 4.5, market_cap: 17500000000, total_volume: 680000000, image: "https://assets.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 40 + Math.sin(i / 10) * 3 + Math.random() * 1) } },
-  { id: "matic-network", symbol: "MATIC", name: "Polygon", current_price: 0.52, price_change_percentage_24h: -1.2, market_cap: 5200000000, total_volume: 320000000, image: "https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 0.50 + Math.sin(i / 10) * 0.03 + Math.random() * 0.01) } },
-  { id: "chainlink", symbol: "LINK", name: "Chainlink", current_price: 24.80, price_change_percentage_24h: 2.9, market_cap: 15500000000, total_volume: 890000000, image: "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 23.5 + Math.sin(i / 10) * 1.5 + Math.random() * 0.5) } },
-  { id: "uniswap", symbol: "UNI", name: "Uniswap", current_price: 14.20, price_change_percentage_24h: 1.5, market_cap: 10700000000, total_volume: 280000000, image: "https://assets.coingecko.com/coins/images/12504/small/uni.jpg", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 13.5 + Math.sin(i / 10) * 0.8 + Math.random() * 0.3) } },
-  { id: "cosmos", symbol: "ATOM", name: "Cosmos", current_price: 9.45, price_change_percentage_24h: 0.6, market_cap: 3700000000, total_volume: 180000000, image: "https://assets.coingecko.com/coins/images/1481/small/cosmos_hub.png", sparkline_in_7d: { price: Array.from({ length: 168 }, (_, i) => 9.2 + Math.sin(i / 10) * 0.3 + Math.random() * 0.1) } },
+// Helper to generate realistic sparkline data around a base price
+function genSparkline(base: number, volatility: number): { price: number[] } {
+  return { price: Array.from({ length: 168 }, (_, i) => base + Math.sin(i / 10) * volatility + (Math.random() - 0.5) * volatility * 0.5) };
+}
+
+// Fallback data with realistic current prices for all 31 tracked coins (updated Apr 2026)
+let FALLBACK_DATA: any[] = [
+  { id: "bitcoin", symbol: "BTC", name: "Bitcoin", current_price: 75166, price_change_percentage_24h: 1.17, market_cap: 1502583543121, total_volume: 39778211788, image: "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png", sparkline_in_7d: genSparkline(74000, 1500) },
+  { id: "ethereum", symbol: "ETH", name: "Ethereum", current_price: 2367, price_change_percentage_24h: 1.95, market_cap: 285451212241, total_volume: 17069698030, image: "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png", sparkline_in_7d: genSparkline(2300, 80) },
+  { id: "ripple", symbol: "XRP", name: "XRP", current_price: 1.41, price_change_percentage_24h: 3.75, market_cap: 86464526872, total_volume: 2825209951, image: "https://coin-images.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png", sparkline_in_7d: genSparkline(1.35, 0.08) },
+  { id: "binancecoin", symbol: "BNB", name: "BNB", current_price: 625.84, price_change_percentage_24h: 1.52, market_cap: 84306789061, total_volume: 1100447536, image: "https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png", sparkline_in_7d: genSparkline(618, 12) },
+  { id: "solana", symbol: "SOL", name: "Solana", current_price: 85.51, price_change_percentage_24h: 2.72, market_cap: 49158001131, total_volume: 3605240759, image: "https://coin-images.coingecko.com/coins/images/4128/large/solana.png", sparkline_in_7d: genSparkline(83, 3) },
+  { id: "tron", symbol: "TRX", name: "TRON", current_price: 0.3258, price_change_percentage_24h: 0.57, market_cap: 30878964124, total_volume: 619308721, image: "https://coin-images.coingecko.com/coins/images/1094/large/tron-logo.png", sparkline_in_7d: genSparkline(0.323, 0.005) },
+  { id: "dogecoin", symbol: "DOGE", name: "Dogecoin", current_price: 0.09635, price_change_percentage_24h: 3.50, market_cap: 14813431170, total_volume: 1274106286, image: "https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png", sparkline_in_7d: genSparkline(0.093, 0.004) },
+  { id: "cardano", symbol: "ADA", name: "Cardano", current_price: 0.2486, price_change_percentage_24h: 3.85, market_cap: 9183673826, total_volume: 419677001, image: "https://coin-images.coingecko.com/coins/images/975/large/cardano.png", sparkline_in_7d: genSparkline(0.24, 0.01) },
+  { id: "chainlink", symbol: "LINK", name: "Chainlink", current_price: 9.32, price_change_percentage_24h: 3.05, market_cap: 6773401883, total_volume: 279578886, image: "https://coin-images.coingecko.com/coins/images/877/large/chainlink-new-logo.png", sparkline_in_7d: genSparkline(9.0, 0.4) },
+  { id: "avalanche-2", symbol: "AVAX", name: "Avalanche", current_price: 9.47, price_change_percentage_24h: 1.84, market_cap: 4087012110, total_volume: 265623868, image: "https://coin-images.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png", sparkline_in_7d: genSparkline(9.3, 0.3) },
+  { id: "sui", symbol: "SUI", name: "Sui", current_price: 0.9708, price_change_percentage_24h: 3.51, market_cap: 3837476950, total_volume: 303145449, image: "https://coin-images.coingecko.com/coins/images/26375/large/sui-ocean-square.png", sparkline_in_7d: genSparkline(0.94, 0.04) },
+  { id: "shiba-inu", symbol: "SHIB", name: "Shiba Inu", current_price: 0.00000608, price_change_percentage_24h: 4.02, market_cap: 3580996897, total_volume: 122065326, image: "https://coin-images.coingecko.com/coins/images/11939/large/shiba.png", sparkline_in_7d: genSparkline(0.0000058, 0.0000003) },
+  { id: "uniswap", symbol: "UNI", name: "Uniswap", current_price: 3.25, price_change_percentage_24h: 3.30, market_cap: 2054436302, total_volume: 158863443, image: "https://coin-images.coingecko.com/coins/images/12504/large/uniswap-logo.png", sparkline_in_7d: genSparkline(3.15, 0.12) },
+  { id: "polkadot", symbol: "DOT", name: "Polkadot", current_price: 1.19, price_change_percentage_24h: 2.19, market_cap: 2003136725, total_volume: 211292746, image: "https://coin-images.coingecko.com/coins/images/12171/large/polkadot.jpg", sparkline_in_7d: genSparkline(1.16, 0.04) },
+  { id: "near", symbol: "NEAR", name: "NEAR Protocol", current_price: 1.42, price_change_percentage_24h: 3.92, market_cap: 1832312925, total_volume: 190344252, image: "https://coin-images.coingecko.com/coins/images/10365/large/near.jpg", sparkline_in_7d: genSparkline(1.37, 0.06) },
+  { id: "pepe", symbol: "PEPE", name: "Pepe", current_price: 0.00000392, price_change_percentage_24h: 9.57, market_cap: 1650256850, total_volume: 409943695, image: "https://coin-images.coingecko.com/coins/images/29850/large/pepe-token.jpeg", sparkline_in_7d: genSparkline(0.0000036, 0.0000004) },
+  { id: "aave", symbol: "AAVE", name: "Aave", current_price: 106.63, price_change_percentage_24h: 6.59, market_cap: 1616140113, total_volume: 401564512, image: "https://coin-images.coingecko.com/coins/images/12645/large/aave-token-round.png", sparkline_in_7d: genSparkline(100, 6) },
+  { id: "algorand", symbol: "ALGO", name: "Algorand", current_price: 0.1121, price_change_percentage_24h: 2.86, market_cap: 998200507, total_volume: 44639591, image: "https://coin-images.coingecko.com/coins/images/4380/large/download.png", sparkline_in_7d: genSparkline(0.109, 0.004) },
+  { id: "render-token", symbol: "RNDR", name: "Render", current_price: 1.88, price_change_percentage_24h: -0.12, market_cap: 972711629, total_volume: 88657703, image: "https://coin-images.coingecko.com/coins/images/11636/large/rndr.png", sparkline_in_7d: genSparkline(1.87, 0.05) },
+  { id: "cosmos", symbol: "ATOM", name: "Cosmos Hub", current_price: 1.78, price_change_percentage_24h: 1.69, market_cap: 895217450, total_volume: 45940132, image: "https://coin-images.coingecko.com/coins/images/1481/large/cosmos_hub.png", sparkline_in_7d: genSparkline(1.75, 0.04) },
+  { id: "aptos", symbol: "APT", name: "Aptos", current_price: 0.8997, price_change_percentage_24h: 4.44, market_cap: 725319104, total_volume: 73704800, image: "https://coin-images.coingecko.com/coins/images/26455/large/aptos.png", sparkline_in_7d: genSparkline(0.86, 0.04) },
+  { id: "arbitrum", symbol: "ARB", name: "Arbitrum", current_price: 0.1166, price_change_percentage_24h: 4.19, market_cap: 704083276, total_volume: 102842751, image: "https://coin-images.coingecko.com/coins/images/16547/large/arb.jpg", sparkline_in_7d: genSparkline(0.112, 0.005) },
+  { id: "bonk", symbol: "BONK", name: "Bonk", current_price: 0.00000626, price_change_percentage_24h: 6.18, market_cap: 551199503, total_volume: 53636763, image: "https://coin-images.coingecko.com/coins/images/28600/large/bonk.jpg", sparkline_in_7d: genSparkline(0.0000059, 0.0000004) },
+  { id: "fetch-ai", symbol: "FET", name: "Artificial Superintelligence Alliance", current_price: 0.2300, price_change_percentage_24h: 1.24, market_cap: 519325986, total_volume: 66199607, image: "https://coin-images.coingecko.com/coins/images/5681/large/ASI.png", sparkline_in_7d: genSparkline(0.227, 0.005) },
+  { id: "lido-dao", symbol: "LDO", name: "Lido DAO", current_price: 0.3905, price_change_percentage_24h: 11.47, market_cap: 331617303, total_volume: 58663932, image: "https://coin-images.coingecko.com/coins/images/13573/large/Lido_DAO.png", sparkline_in_7d: genSparkline(0.35, 0.04) },
+  { id: "injective-protocol", symbol: "INJ", name: "Injective", current_price: 3.27, price_change_percentage_24h: 9.36, market_cap: 326886506, total_volume: 90449023, image: "https://coin-images.coingecko.com/coins/images/12882/large/injective.png", sparkline_in_7d: genSparkline(3.0, 0.3) },
+  { id: "the-graph", symbol: "GRT", name: "The Graph", current_price: 0.02520, price_change_percentage_24h: 4.85, market_cap: 271619251, total_volume: 13521514, image: "https://coin-images.coingecko.com/coins/images/13397/large/Graph_Token.png", sparkline_in_7d: genSparkline(0.024, 0.0015) },
+  { id: "optimism", symbol: "OP", name: "Optimism", current_price: 0.1212, price_change_percentage_24h: 8.22, market_cap: 258925016, total_volume: 63093778, image: "https://coin-images.coingecko.com/coins/images/25244/large/Token.png", sparkline_in_7d: genSparkline(0.112, 0.01) },
+  { id: "fantom", symbol: "FTM", name: "Fantom", current_price: 0.04546, price_change_percentage_24h: 0.79, market_cap: 127000000, total_volume: 1012, image: "https://coin-images.coingecko.com/coins/images/4001/large/Fantom_round.png", sparkline_in_7d: genSparkline(0.045, 0.002) },
+  { id: "matic-network", symbol: "MATIC", name: "MATIC (migrated to POL)", current_price: 0.0, price_change_percentage_24h: 0.0, market_cap: 0, total_volume: 115729, image: "https://coin-images.coingecko.com/coins/images/4713/large/polygon.png", sparkline_in_7d: genSparkline(0.01, 0.001) },
 ];
 
-// Fetch market data from CoinGecko with caching
+// Fetch market data from CoinGecko with caching and retry
 async function fetchMarketData() {
   const now = Date.now();
   
@@ -74,31 +99,57 @@ async function fetchMarketData() {
     return marketDataCache;
   }
   
-  try {
-    const ids = Object.values(COIN_IDS).join(",");
-    const url = `${COINGECKO_API}/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=24h`;
-    
-    const response = await fetch(url);
-    if (!response.ok) {
-      if (response.status === 429) {
-        console.log("CoinGecko rate limited, using fallback data");
-        return FALLBACK_DATA;
+  const ids = Object.values(COIN_IDS).join(",");
+  const url = `${COINGECKO_API}/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=50&page=1&sparkline=true&price_change_percentage=24h`;
+  
+  // Try up to 2 attempts with a delay between them
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      if (attempt > 0) {
+        // Wait 2 seconds before retry
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
-      throw new Error(`CoinGecko API error: ${response.status}`);
+      
+      const response = await fetch(url, {
+        headers: {
+          "Accept": "application/json",
+          "User-Agent": "VortiaAI-SentimentTracker/1.0",
+        },
+      });
+      
+      if (!response.ok) {
+        if (response.status === 429) {
+          console.log(`CoinGecko rate limited (attempt ${attempt + 1}/2)`);
+          continue; // Retry
+        }
+        throw new Error(`CoinGecko API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Update cache
+      marketDataCache = data;
+      marketDataCacheTime = now;
+      
+      // Also update fallback data with fresh prices so fallback stays current
+      FALLBACK_DATA = data;
+      
+      console.log(`CoinGecko data fetched successfully: ${data.length} coins`);
+      return data;
+    } catch (error) {
+      console.error(`Market data fetch error (attempt ${attempt + 1}/2):`, error);
     }
-    
-    const data = await response.json();
-    
-    // Update cache
-    marketDataCache = data;
-    marketDataCacheTime = now;
-    
-    return data;
-  } catch (error) {
-    console.error("Market data fetch error:", error);
-    // Return fallback data on any error
-    return FALLBACK_DATA;
   }
+  
+  // If cache exists but expired, extend it rather than using static fallback
+  if (marketDataCache) {
+    console.log("Using expired cache data (better than static fallback)");
+    marketDataCacheTime = now - CACHE_DURATION + 60000; // Extend cache by 1 more minute
+    return marketDataCache;
+  }
+  
+  console.log("Using static fallback data");
+  return FALLBACK_DATA;
 }
 
 // Fetch price history for a specific coin
