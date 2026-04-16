@@ -16,8 +16,6 @@ import {
   Trash2,
   Loader2,
   Cpu,
-  Lock,
-  Sparkles
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -32,6 +30,7 @@ import {
   PolarRadiusAxis,
   Radar,
 } from "recharts";
+import { AppSidebar } from "@/components/AppSidebar";
 
 interface Holding {
   id: string;
@@ -127,9 +126,8 @@ export default function PortfolioRisk() {
 
   const overallRisk = getRiskLevel(riskAnalysis?.overallScore || 50);
 
-
   return (
-    <div className="flex-1 overflow-y-auto p-4 lg:p-8">
+    <AppSidebar searchPlaceholder="Search portfolio..." statusText="System Operational">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
@@ -384,6 +382,6 @@ export default function PortfolioRisk() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </AppSidebar>
   );
 }

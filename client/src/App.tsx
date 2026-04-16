@@ -10,6 +10,7 @@ import MarketOverview from "./pages/MarketOverview";
 import DataGateway from "./pages/DataGateway";
 import Marketplace from "./pages/Marketplace";
 import ModelDetail from "./pages/ModelDetail";
+import Settings from "./pages/Settings";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -21,6 +22,7 @@ function Router() {
       <Route path={"/data-gateway"} component={DataGateway} />
       <Route path={"/marketplace"} component={Marketplace} />
       <Route path={"/marketplace/:id"} component={ModelDetail} />
+      <Route path={"/settings"} component={Settings} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
