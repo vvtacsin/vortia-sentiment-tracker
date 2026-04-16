@@ -321,7 +321,7 @@ export default function Home() {
                                     </div>
                                   ) : (
                                     <p className="text-sm leading-relaxed text-gray-300">
-                                      {aiAnalysis?.analysis || "Loading AI insights..."}
+                                      {aiAnalysis?.analysis || "Powered by Vortia Neural Network \u2014 Initializing..."}
                                     </p>
                                   )}
                               </div>
