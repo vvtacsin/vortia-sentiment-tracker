@@ -265,7 +265,7 @@ export default function ModelDetail() {
               <Menu className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <img src="/vortia-logo.png" alt="Vortia AI" className="h-8 w-8 lg:hidden" />
+              <img src="/vortia-logo.png" alt="Vortia AI" className="h-8 w-auto lg:hidden" />
               <div className="hidden md:flex items-center text-sm text-muted-foreground">
                 <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
                 System Operational
