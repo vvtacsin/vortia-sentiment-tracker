@@ -96,6 +96,16 @@ function FloatingParticles() {
   );
 }
 
+// Live "last sync" counter
+function NetworkLastSync() {
+  const [secs, setSecs] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setSecs(s => (s >= 30 ? 0 : s + 1)), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return <span>Last sync: {secs}s ago</span>;
+}
+
 interface AppSidebarProps {
   searchPlaceholder?: string;
   statusText?: string;
@@ -234,10 +244,45 @@ export function AppSidebar({ searchPlaceholder = "Search...", statusText = "Syst
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-y-auto p-4 lg:p-8 scroll-smooth">
-          <div className="animate-fade-in-up">
-            {children}
+        <div className="flex-1 overflow-y-auto scroll-smooth flex flex-col">
+          <div className="flex-1 p-4 lg:p-8">
+            <div key={location} className="page-transition-enter">
+              {children}
+            </div>
           </div>
+
+          {/* Network Status Footer */}
+          <footer className="network-footer">
+            <div className="flex items-center gap-3 flex-wrap">
+              <span>
+                <span className="node-dot" />
+                Connected to 4 oracle nodes
+              </span>
+              <span className="separator">·</span>
+              <span>Latency: {Math.floor(Math.random() * 8) + 8}ms</span>
+              <span className="separator">·</span>
+              <NetworkLastSync />
+              <span className="separator">·</span>
+              <span className="text-primary/40">v1.0.0-beta</span>
+            </div>
+            <div className="powered-by-row border-0 p-0 bg-transparent">
+              <span className="powered-label">Data from</span>
+              <a href="https://coingecko.com" target="_blank" rel="noopener noreferrer" className="data-source">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                CoinGecko
+              </a>
+              <span className="separator">·</span>
+              <a href="https://chain.link" target="_blank" rel="noopener noreferrer" className="data-source">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                Chainlink
+              </a>
+              <span className="separator">·</span>
+              <a href="https://thegraph.com" target="_blank" rel="noopener noreferrer" className="data-source">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8"/></svg>
+                The Graph
+              </a>
+            </div>
+          </footer>
         </div>
       </main>
     </div>

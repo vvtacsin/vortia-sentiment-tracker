@@ -529,3 +529,170 @@ a, button {
   outline: 2px solid rgba(20, 184, 166, 0.5);
   outline-offset: 2px;
 }
+
+/* ============================================
+   PAGE TRANSITIONS
+   ============================================ */
+
+@keyframes page-enter {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes page-exit {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+
+.page-transition-enter {
+  animation: page-enter 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ============================================
+   PRICE FLASH ANIMATIONS
+   ============================================ */
+
+@keyframes flash-green {
+  0% { background-color: transparent; color: inherit; }
+  20% { background-color: rgba(34, 197, 94, 0.18); color: #4ade80; }
+  100% { background-color: transparent; color: inherit; }
+}
+
+@keyframes flash-red {
+  0% { background-color: transparent; color: inherit; }
+  20% { background-color: rgba(239, 68, 68, 0.18); color: #f87171; }
+  100% { background-color: transparent; color: inherit; }
+}
+
+.price-flash-up {
+  animation: flash-green 1.2s ease-out forwards;
+  border-radius: 4px;
+}
+
+.price-flash-down {
+  animation: flash-red 1.2s ease-out forwards;
+  border-radius: 4px;
+}
+
+/* ============================================
+   RESPONSIVE DATA TABLES
+   ============================================ */
+
+.vortia-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.vortia-table thead tr th {
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+
+.vortia-table tbody tr {
+  transition: background 0.2s ease, transform 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.vortia-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.vortia-table tbody tr:hover {
+  background: rgba(20, 184, 166, 0.06) !important;
+  transform: translateX(2px);
+  border-color: rgba(20, 184, 166, 0.1);
+}
+
+.vortia-table tbody tr td {
+  padding: 0.65rem 1rem;
+  font-size: 0.8rem;
+  vertical-align: middle;
+}
+
+.vortia-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* ============================================
+   NETWORK STATUS FOOTER
+   ============================================ */
+
+.network-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  background: linear-gradient(180deg, transparent, rgba(20, 184, 166, 0.02));
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.network-footer .node-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #22c55e;
+  margin-right: 5px;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.network-footer .separator {
+  color: rgba(255, 255, 255, 0.12);
+  margin: 0 0.4rem;
+}
+
+/* ============================================
+   POWERED BY LOGOS ROW
+   ============================================ */
+
+.powered-by-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.powered-by-row .powered-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+}
+
+.powered-by-row .data-source {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.25);
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.powered-by-row .data-source:hover {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.powered-by-row .data-source svg {
+  opacity: 0.4;
+}

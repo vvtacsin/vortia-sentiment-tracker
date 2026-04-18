@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import type { Asset } from "@shared/marketTypes";
@@ -63,6 +63,26 @@ export default function Home() {
       staleTime: 60000,
     }
   );
+
+  // Price flash tracking
+  const prevPricesRef = useRef<Record<string, number>>({});
+  const [flashMap, setFlashMap] = useState<Record<string, 'up' | 'down' | null>>({});
+
+  useEffect(() => {
+    if (!assets) return;
+    const newFlash: Record<string, 'up' | 'down' | null> = {};
+    assets.forEach((asset: Asset) => {
+      const prev = prevPricesRef.current[asset.id];
+      if (prev !== undefined && prev !== asset.price) {
+        newFlash[asset.id] = asset.price > prev ? 'up' : 'down';
+      }
+      prevPricesRef.current[asset.id] = asset.price;
+    });
+    if (Object.keys(newFlash).length > 0) {
+      setFlashMap(newFlash);
+      setTimeout(() => setFlashMap({}), 1200);
+    }
+  }, [assets]);
 
   const [pulse, setPulse] = useState(false);
   useEffect(() => {
@@ -166,7 +186,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-mono text-xs font-medium">${(asset.price ?? 0).toLocaleString()}</div>
+                    <div className={`font-mono text-xs font-medium px-1 rounded ${flashMap[asset.id] === 'up' ? 'price-flash-up' : flashMap[asset.id] === 'down' ? 'price-flash-down' : ''}`}>${(asset.price ?? 0).toLocaleString()}</div>
                     <div className={`text-[10px] flex items-center justify-end font-mono ${(asset.change24h ?? 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {(asset.change24h ?? 0) >= 0 ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
                       {Math.abs(asset.change24h ?? 0).toFixed(2)}%

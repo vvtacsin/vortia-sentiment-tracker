@@ -229,39 +229,55 @@ export default function MarketOverview() {
                 Top Gainers (24h)
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4">
+            <CardContent className="p-0 overflow-hidden">
               {assetsLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
               ) : (
-                <div className="space-y-3">
+                <table className="vortia-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Asset</th>
+                      <th className="text-right">Price</th>
+                      <th className="text-right">24h Change</th>
+                      <th className="text-right hidden md:table-cell">Market Cap</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                   {topGainers.map((asset, index) => (
-                    <div key={asset.id} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5 hover:border-green-500/30 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-bold text-muted-foreground w-5">{index + 1}</span>
-                        <div className="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex items-center justify-center">
-                          {asset.image ? (
-                            <img src={asset.image} alt={asset.symbol} className="w-full h-full object-cover" />
-                          ) : (
-                            <span className="text-xs font-bold">{asset.symbol[0]}</span>
-                          )}
+                    <tr key={asset.id}>
+                      <td className="text-muted-foreground font-bold w-8">{index + 1}</td>
+                      <td>
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full overflow-hidden bg-white/10 flex items-center justify-center flex-shrink-0">
+                            {asset.image ? (
+                              <img src={asset.image} alt={asset.symbol} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-xs font-bold">{asset.symbol[0]}</span>
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-bold text-xs">{asset.name}</div>
+                            <div className="text-[10px] text-muted-foreground">{asset.symbol}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-bold text-sm">{asset.name}</div>
-                          <div className="text-xs text-muted-foreground">{asset.symbol}</div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-mono text-sm">${(asset.price || 0).toLocaleString()}</div>
-                        <div className="text-sm text-green-400 flex items-center justify-end">
-                          <ArrowUpRight className="w-4 h-4 mr-1" />
+                      </td>
+                      <td className="text-right font-mono text-xs">${(asset.price || 0).toLocaleString()}</td>
+                      <td className="text-right">
+                        <span className="text-green-400 text-xs flex items-center justify-end gap-0.5">
+                          <ArrowUpRight className="w-3 h-3" />
                           +{(asset.change24h || 0).toFixed(2)}%
-                        </div>
-                      </div>
-                    </div>
+                        </span>
+                      </td>
+                      <td className="text-right font-mono text-xs text-muted-foreground hidden md:table-cell">
+                        {asset.marketCap ? `$${(asset.marketCap / 1e9).toFixed(1)}B` : '—'}
+                      </td>
+                    </tr>
                   ))}
-                </div>
+                  </tbody>
+                </table>
               )}
             </CardContent>
           </Card>
@@ -274,39 +290,55 @@ export default function MarketOverview() {
                 Top Losers (24h)
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4">
+            <CardContent className="p-0 overflow-hidden">
               {assetsLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
               ) : (
-                <div className="space-y-3">
+                <table className="vortia-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Asset</th>
+                      <th className="text-right">Price</th>
+                      <th className="text-right">24h Change</th>
+                      <th className="text-right hidden md:table-cell">Market Cap</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                   {topLosers.map((asset, index) => (
-                    <div key={asset.id} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5 hover:border-red-500/30 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <span className="text-sm font-bold text-muted-foreground w-5">{index + 1}</span>
-                        <div className="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex items-center justify-center">
-                          {asset.image ? (
-                            <img src={asset.image} alt={asset.symbol} className="w-full h-full object-cover" />
-                          ) : (
-                            <span className="text-xs font-bold">{asset.symbol[0]}</span>
-                          )}
+                    <tr key={asset.id}>
+                      <td className="text-muted-foreground font-bold w-8">{index + 1}</td>
+                      <td>
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-full overflow-hidden bg-white/10 flex items-center justify-center flex-shrink-0">
+                            {asset.image ? (
+                              <img src={asset.image} alt={asset.symbol} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-xs font-bold">{asset.symbol[0]}</span>
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-bold text-xs">{asset.name}</div>
+                            <div className="text-[10px] text-muted-foreground">{asset.symbol}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-bold text-sm">{asset.name}</div>
-                          <div className="text-xs text-muted-foreground">{asset.symbol}</div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-mono text-sm">${(asset.price || 0).toLocaleString()}</div>
-                        <div className="text-sm text-red-400 flex items-center justify-end">
-                          <ArrowDownRight className="w-4 h-4 mr-1" />
+                      </td>
+                      <td className="text-right font-mono text-xs">${(asset.price || 0).toLocaleString()}</td>
+                      <td className="text-right">
+                        <span className="text-red-400 text-xs flex items-center justify-end gap-0.5">
+                          <ArrowDownRight className="w-3 h-3" />
                           {(asset.change24h || 0).toFixed(2)}%
-                        </div>
-                      </div>
-                    </div>
+                        </span>
+                      </td>
+                      <td className="text-right font-mono text-xs text-muted-foreground hidden md:table-cell">
+                        {asset.marketCap ? `$${(asset.marketCap / 1e9).toFixed(1)}B` : '—'}
+                      </td>
+                    </tr>
                   ))}
-                </div>
+                  </tbody>
+                </table>
               )}
             </CardContent>
           </Card>
