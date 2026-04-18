@@ -176,7 +176,7 @@ export default function ModelDetail() {
   };
 
   return (
-    <AppSidebar searchPlaceholder="Search models..." statusText="System Operational">
+    <AppSidebar searchPlaceholder="Search models..." statusText="Neural Network Active">
       <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
         
         {/* Back Button */}

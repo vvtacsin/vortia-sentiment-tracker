@@ -30,7 +30,7 @@ export default function Marketplace() {
   });
 
   return (
-    <AppSidebar searchPlaceholder="Search models..." statusText="System Operational">
+    <AppSidebar searchPlaceholder="Search models..." statusText="Neural Network Active">
       <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
         
         {/* Header Section */}
@@ -41,7 +41,7 @@ export default function Marketplace() {
               <span className="text-sm text-muted-foreground">Vortia Ecosystem</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
-              AI Model <span className="text-primary">Marketplace</span>
+              AI Model <span className="gradient-text">Marketplace</span>
             </h1>
             <p className="text-muted-foreground max-w-xl">
               Discover, integrate, and monetize decentralized AI models using VAI tokens. 

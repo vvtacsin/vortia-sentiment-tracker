@@ -127,13 +127,13 @@ export default function PortfolioRisk() {
   const overallRisk = getRiskLevel(riskAnalysis?.overallScore || 50);
 
   return (
-    <AppSidebar searchPlaceholder="Search portfolio..." statusText="System Operational">
+    <AppSidebar searchPlaceholder="Search portfolio..." statusText="Neural Network Active">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-end justify-between">
           <div>
             <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
-              Portfolio <span className="text-primary">Risk Analyzer</span>
+              Portfolio <span className="gradient-text">Risk Analyzer</span>
             </h1>
             <p className="text-muted-foreground max-w-xl">
               AI-powered analysis of your crypto portfolio's risk profile, diversification, and optimization recommendations.

@@ -86,28 +86,32 @@ export default function MarketOverview() {
   };
 
   return (
-    <AppSidebar searchPlaceholder="Search markets..." statusText="System Operational">
+    <AppSidebar searchPlaceholder="Search markets..." statusText="Neural Network Active">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Hero Section */}
         <div className="flex flex-col md:flex-row gap-6 items-end justify-between">
           <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="h-px w-8 bg-gradient-to-r from-primary to-transparent" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/70">Real-Time Intelligence</span>
+            </div>
             <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
-              Market <span className="text-primary">Overview</span>
+              Market <span className="gradient-text">Overview</span>
             </h1>
-            <p className="text-muted-foreground max-w-xl">
+            <p className="text-muted-foreground max-w-xl text-sm leading-relaxed">
               Comprehensive market analysis powered by Vortia AI. Track sectors, sentiment, and market movements in real-time.
             </p>
           </div>
           <div className="flex gap-4">
-            <Card className="bg-white/5 border-white/10 px-4 py-2">
-              <div className="text-xs text-muted-foreground mb-1">Total Market Cap</div>
+            <Card className="bg-white/5 border-white/10 px-4 py-3 stat-accent-teal">
+              <div className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider">Total Market Cap</div>
               <div className="text-xl font-display font-bold text-white">
                 ${globalStats?.totalMarketCap ? (globalStats.totalMarketCap / 1e12).toFixed(2) : "2.8"}T
               </div>
             </Card>
-            <Card className="bg-white/5 border-white/10 px-4 py-2">
-              <div className="text-xs text-muted-foreground mb-1">24h Volume</div>
+            <Card className="bg-white/5 border-white/10 px-4 py-3 stat-accent-purple">
+              <div className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wider">24h Volume</div>
               <div className="text-xl font-display font-bold text-white">
                 ${globalStats?.totalVolume24h ? (globalStats.totalVolume24h / 1e9).toFixed(0) : "95"}B
               </div>

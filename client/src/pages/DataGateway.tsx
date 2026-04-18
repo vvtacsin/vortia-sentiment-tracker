@@ -89,14 +89,14 @@ export default function DataGateway() {
   }, []);
 
   return (
-    <AppSidebar searchPlaceholder="Search data sources..." statusText="All Systems Operational">
+     <AppSidebar searchPlaceholder="Search data..." statusText="Neural Network Active">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Hero Section */}
         <div className="flex flex-col md:flex-row gap-6 items-end justify-between">
           <div>
             <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
-              Data <span className="text-primary">Gateway</span>
+              Data <span className="gradient-text">Gateway</span>
             </h1>
             <p className="text-muted-foreground max-w-xl">
               Real-time monitoring of the Vortia Oracle Network. Track validator performance, data throughput, and network health.

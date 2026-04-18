@@ -88,13 +88,13 @@ export default function Settings() {
   };
 
   return (
-    <AppSidebar searchPlaceholder="Search settings..." statusText="System Operational">
+    <AppSidebar searchPlaceholder="Search settings..." statusText="Neural Network Active">
       <div className="max-w-4xl mx-auto space-y-8">
         
         {/* Header */}
         <div>
           <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">
-            <span className="text-primary">Settings</span>
+            <span className="gradient-text">Settings</span>
           </h1>
           <p className="text-muted-foreground max-w-xl">
             Manage your account, API access, notification preferences, and platform configuration.
