@@ -118,10 +118,10 @@ export default function Home() {
         </div>
 
         {/* Main Analysis Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
           
           {/* Asset List */}
-          <Card className="glass-panel lg:col-span-1 flex flex-col overflow-hidden" style={{ minHeight: '600px', maxHeight: '800px' }}>
+          <Card className="glass-panel lg:col-span-1 flex flex-col overflow-hidden">
             <CardHeader className="pb-2 border-b border-white/5 flex-shrink-0">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
