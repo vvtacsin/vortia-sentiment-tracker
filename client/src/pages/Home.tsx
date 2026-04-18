@@ -121,7 +121,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
           
           {/* Asset List */}
-          <Card className="glass-panel lg:col-span-1 flex flex-col overflow-hidden h-[480px]">
+          <Card className="glass-panel lg:col-span-1 flex flex-col overflow-hidden" style={{ minHeight: '600px', maxHeight: '800px' }}>
             <CardHeader className="pb-2 border-b border-white/5 flex-shrink-0">
               <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
@@ -178,7 +178,7 @@ export default function Home() {
           </Card>
 
           {/* AI Analysis Detail */}
-          <Card className="glass-panel lg:col-span-2 flex flex-col relative overflow-hidden h-[480px] scan-effect">
+          <Card className="glass-panel lg:col-span-2 flex flex-col relative overflow-hidden scan-effect">
             {/* Background Glow Orbs */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none animate-pulse" style={{ animationDuration: '4s' }}></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none animate-pulse" style={{ animationDuration: '6s' }}></div>
@@ -233,7 +233,7 @@ export default function Home() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="flex-1 p-4 flex flex-col gap-4 overflow-y-scroll relative z-10" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(20, 184, 166, 0.3) transparent' }}>
+                <CardContent className="p-4 flex flex-col gap-4 relative z-10">
                   {/* AI Summary Box - Enhanced */}
                   <div className="bg-black/30 rounded-xl p-5 border border-primary/10 relative group hover:border-primary/20 transition-all duration-300">
                     <div className="absolute -left-[1px] top-4 bottom-4 w-[3px] bg-gradient-to-b from-primary via-purple-500 to-transparent rounded-r-full shadow-[0_0_8px_rgba(20,184,166,0.3)]"></div>
@@ -286,12 +286,12 @@ export default function Home() {
                   </div>
 
                   {/* Sentiment Chart */}
-                  <div className="bg-white/5 rounded-xl border border-white/5 p-4 relative h-[200px] hover:border-white/10 transition-all duration-300">
+                  <div className="bg-white/5 rounded-xl border border-white/5 p-4 relative hover:border-white/10 transition-all duration-300">
                     <div className="mb-2 flex items-center justify-between">
                       <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Price & Sentiment Correlation</h3>
                       <span className="text-[10px] font-mono text-primary/50">7D</span>
                     </div>
-                    <div className="h-[140px] w-full">
+                    <div className="h-[200px] w-full">
                       <SentimentChart 
                         data={selectedAsset.history || []} 
                         color={selectedAsset.sentimentTrend === 'bearish' ? '#F43F5E' : '#14B8A6'} 
